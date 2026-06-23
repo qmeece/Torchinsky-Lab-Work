@@ -104,7 +104,7 @@ class PulseData:
                     #Otherwise, just average them element wise.
                     self.average_shot = (self.single_shot + i*(self.average_shot ))/(i+1)
                 
-                #ZABER STOP
+            #ZABER STOP
                   
 
                 
