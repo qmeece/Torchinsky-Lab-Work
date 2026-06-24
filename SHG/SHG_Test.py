@@ -14,7 +14,7 @@ class PulseData:
                 sample_rate - how many samples are taken per second
                 samples_per_event - the total number of samples taken after triggering
     '''
-    def _init_(self,
+    def __init__(self,
                PMT_channel = config.PMT_CHANNEL,
                counter_channel = config.COUNTER_CHANNEL,
                trigger_source = config.CLOCK_CHANNEL,
@@ -59,16 +59,16 @@ class PulseData:
                 source=self.trigger_source,
                 sample_mode=AcquisitionType.FINITE,
                 samps_per_chan=self.samples_per_channel*self.averages,
-                trigger_edge=Edge.FALLING
+                active_edge=Edge.FALLING
             )
             
             #Adds the input channel to the Counter task
-            task_Counter.ci_channels.add_ci_ang_encoder(counter=self.counter_channel,
+            task_Counter.ci_channels.add_ci_ang_encoder_chan(counter=self.counter_channel,
                                                         pulses_per_rev=config.PULSES_PER_REV)
             #Adds the encoder input channels
-            task_Counter.ci_channels.ci_encoder_a_input_term_cfg(self.Enc_A_channel)
-            task_Counter.ci_channels.ci_encoder_a_input_term_cfg(self.Enc_B_channel)
-            
+            task_Counter.ci_channels.all.ci_encoder_a_input_term = self.Enc_A_channel
+            task_Counter.ci_channels.all.ci_encoder_b_input_term = self.Enc_B_channel
+
             #Times the counter to only take points when the pulse data is taken
             task_Counter.timing.cfg_samp_clk_timing(
                 source=self.trigger_source,
@@ -80,29 +80,33 @@ class PulseData:
             task_Counter.start()
             task_PMT.start()
             
-            average_shots = []
+            self.average_shots = []
             #For every single shot data set
             for i in range(self.averages):
                 #Read the pulse channel
                 PMT_peaks_raw =np.array(task_PMT.read(number_of_samples_per_channel=self.samples_per_channel))
                 #SPECIAL- WE HAVE NO IDEA WHY THIS OFFSET IS SUBTRACTED FROM THE PMT SIGNAL, ASK ABOUT THIS
-                PMT_peaks_offset= [a - 0.00111 for a in PMT_peaks_raw]
+                PMT_peaks_offset= np.array([a - 0.00111 for a in PMT_peaks_raw])
                 #Read the corresponding degree from the counter
                 # Note that this creates an array with absolute degrees, including values greater than 360
                 angle_unwrapped = np.array(task_Counter.read(number_of_samples_per_channel=self.samples_per_channel))
+
                 #This wraps all angles to be between 0 and 360
-                angle_wrapped = [d % 360 for d in angle_unwrapped]
+                angle_wrapped = list([d % 360 for d in angle_unwrapped])
                 #This sorts the peak values by angle
                 #This is the result that we could display as the single shot data
-                self.single_shot= PMT_peaks_offset[np.argsort(angle_wrapped)]
-                
+                print(len(angle_wrapped))
+                idx = np.argsort(angle_wrapped)
+                print("check 1")
+                self.single_shot= PMT_peaks_offset[idx]
+                print("check 2")
                 #If we haven't added a single shot yet
                 if i==0:
                     #Set the average shots to the first single shot
-                    self.average_shot = self.single_shot
+                    self.average_shots = self.single_shot
                 else:
                     #Otherwise, just average them element wise.
-                    self.average_shot = (self.single_shot + i*(self.average_shot ))/(i+1)
+                    self.average_shots = (self.single_shot + i*(self.average_shots ))/(i+1)
                   
 
                 

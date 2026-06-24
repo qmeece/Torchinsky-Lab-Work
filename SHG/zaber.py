@@ -3,6 +3,7 @@
 #Author(s): Quinn Meece, Josh Woznicki v
 
 #Imports
+import time
 import config
 from zaber_motion import Units
 from zaber_motion.ascii import Connection
@@ -22,25 +23,32 @@ class Zaber:
         self.analyzer_offset = ANALYZER_OFFSET
         self.polarizer_offset = POLARIZER_OFFSET
 
-    def move(self):
-        pass
+    def setup_trigger(self):
+        self.device.generic_command("trigger 1 disable")
+
+        self.device.generic_command("trigger dist 1 1 2400")
+
+        self.device.generic_command("trigger 1 action a io do 1 toggle")
+
+        self.device.generic_command("trigger dist 1 enable")
 
     def getBothToV(self):
-        self.P_axis.move_absolute(self.polarizer_offset, Units.ANGLE_DEGREES)
-        self.A_axis.move_absolute(self.analyzer_offset, Units.ANGLE_DEGREES)
+        self.P_axis.home()
+        self.A_axis.home()
+        self.P_axis.move_relative(self.polarizer_offset)
+        self.A_axis.move_relative(self.analyzer_offset)
 
     def start_Zaber(self, speed=39000):
         # Initialize the Zaber motors
         self.connection = Connection.open_serial_port(self.zaber_resource_name)
 
-        device = self.connection.detect_devices()[0]
+        self.device = self.connection.detect_devices()[0]
+        #self.device.generic_command("lockstep 1 setup disable")
 
-        print(device)
+        self.P_axis = self.device.get_axis(1)
+        self.A_axis = self.device.get_axis(2)
 
-        return
-
-        self.P_axis = device.get_axis(1)
-        self.A_axis = device.get_axis(2)
+        self.setup_trigger()
 
         # Move both the analyzer and polarizer to the vertical polarization
         self.getBothToV()
@@ -49,20 +57,40 @@ class Zaber:
             self.P_axis.move_velocity(speed)
 
         elif self.mode == "H":
-            self.A_axis.move_relative(90, Units.ANGLE_DEGREES)
+            self.A_axis.move_relative(0)
             self.P_axis.move_velocity(speed)
+            time.sleep(5)
+            self.P_axis.stop()
 
         elif self.mode == "SAME":
-            self.axis_group = self.connection.get_axis_group([self.P_axis, self.A_axis])
-            self.axis_group.move_velocity(speed)
+            self.lockstep = self.device.get_lockstep(1)
+            self.lockstep.enable(1, 2)
+            self.lockstep.move_velocity(speed)
 
-        elif self.mode == "OPPOSITE":
-            pass
+        # elif self.mode == "OPPOSITE":
+        #     self.A_axis.settings.set("system.axis.reverse", 0)
+        #     self.lockstep = device.get_lockstep(1)
+        #     self.lockstep.enable(1, 2)
+        #     self.lockstep.move_velocity(speed)
+
         else:
             print("Invalid polarization mode")
 
     def close(self):
-        self.connection.close()
+            try:
+                self.P_axis.stop()
+            except:
+                pass
+            try:
+                self.A_axis.stop()
+            except:
+                pass
+            try:
+                self.lockstep.disable()
+            except:
+                print("not in lockstep")
+            self.connection.close()
+
 
         
 

@@ -4,18 +4,18 @@
 #The SDG Trigger input
 #This is a TTL Pulse which is timed to the arrival of the laser to the PMT
 #The rising edge should be timed to peak pulse height
-CLOCK_CHANNEL = "Dev1/PFI11"
+CLOCK_CHANNEL = "/Dev1/PFI1"
 #The Counter Channel
 #This is a TTL which is timed to count the steps from the encoders
 #This pulses each time the stepper motors on the Polarizer/analyzer move a step
-COUNTER_CHANNEL = "Dev1/PFI7"
+COUNTER_CHANNEL = "/Dev1/ctr0"
 #The Encoder for the polarizer
 #This keeps track of the angle of the polarizer
-ENCODER_CHANNEL = "Dev1/PFI3"
+ENCODER_CHANNEL = "/Dev1/PFI3"
 #The output of the PMT (From the Integrator and Shaper output)
-PMT_CHANNEL = "Dev1/ai0"
+PMT_CHANNEL = "/Dev1/ai0"
 #This is the channel for the SC, which tells the program that the polarizer has begun a rotation
-SC_CHANNEL = "Dev1/PFI12"
+SC_CHANNEL = "/Dev1/PFI12"
 
 
 #PULSE READING CONFIGURATIONS
@@ -31,8 +31,8 @@ AVERAGES = 5
 PULSES_PER_REV=3000
 
 #ENCODER CHANNELS
-ENC_A_CHANNEL= "Dev1/PFI8"
-ENC_B_CHANNEL= "Dev1/PFI14"
+ENC_A_CHANNEL= "/Dev1/PFI8"
+ENC_B_CHANNEL= "/Dev1/PFI14"
 
 #ZABER INPUTS
 ZABER_RESOURCE_NAME = "COM7"
@@ -50,6 +50,6 @@ POLARIZER_OFFSET = 0
 #Sets the polarization mode that the Zaber runs in.
 # H is for the analyzer horizontally polarized and the polarizer spinning.
 # V is for the analyzer vertically polarized and the polarizer spinning.
-# Same is for polarizer and analyzer lockstep spinning in the same direction.
-# Opposite is for polarizer and analyzer lockstep spinning in opposite directions.
-POLARIZATION_MODE = "OPPOSITE"
+# SAME is for polarizer and analyzer lockstep spinning in the same direction.
+# OPPOSITE is for polarizer and analyzer lockstep spinning in opposite directions.
+POLARIZATION_MODE = "SAME"
