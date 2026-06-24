@@ -3,7 +3,7 @@
 
 #Imports
 import config
-from nidaqmx import AcquisitionType, TerminalConfiguration, Edge
+from nidaqmx.constants import AcquisitionType, TerminalConfiguration, Edge
 import nidaqmx
 import numpy as np
 
@@ -103,8 +103,6 @@ class PulseData:
                 else:
                     #Otherwise, just average them element wise.
                     self.average_shot = (self.single_shot + i*(self.average_shot ))/(i+1)
-                
-            #ZABER STOP
                   
 
                 

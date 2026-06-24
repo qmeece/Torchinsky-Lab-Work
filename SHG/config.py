@@ -36,11 +36,14 @@ ENC_B_CHANNEL= "Dev1/PFI14"
 
 #ZABER INPUTS
 ZABER_RESOURCE_NAME = "COM7"
-H = 0
-V = 1
-SAME = 2
-OPPOSITE = 3
+P_MOTOR = "1 2"
+A_MOTOR = "1 1"
+# H = 0
+# V = 1
+# SAME = 2
+# OPPOSITE = 3
 
+# Offset in degrees for both the analyzer and polarizer to get to vertical polarization
 ANALYZER_OFFSET = 0
 POLARIZER_OFFSET = 0
 
@@ -49,4 +52,4 @@ POLARIZER_OFFSET = 0
 # V is for the analyzer vertically polarized and the polarizer spinning.
 # Same is for polarizer and analyzer lockstep spinning in the same direction.
 # Opposite is for polarizer and analyzer lockstep spinning in opposite directions.
-POLARIZATION_MODE = OPPOSITE
+POLARIZATION_MODE = "OPPOSITE"
