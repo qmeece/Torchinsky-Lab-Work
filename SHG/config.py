@@ -22,7 +22,7 @@ SC_CHANNEL = "/Dev1/PFI12"
 #Number of samples recorded from the PMT input per second
 SAMPLE_RATE = 1000000
 #The number of peaks taken per rotation
-SAMPLES_PER_CHANNEL = 10007
+SAMPLES_PER_CHANNEL = 1007
 #Number of times we rescan
 AVERAGES = 5
 
