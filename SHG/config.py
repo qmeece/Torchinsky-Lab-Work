@@ -47,9 +47,12 @@ A_MOTOR = "1 1"
 ANALYZER_OFFSET = 0
 POLARIZER_OFFSET = 0
 
-#Sets the polarization mode that the Zaber runs in.
+# Sets the polarization mode that the Zaber runs in.
 # H is for the analyzer horizontally polarized and the polarizer spinning.
 # V is for the analyzer vertically polarized and the polarizer spinning.
 # SAME is for polarizer and analyzer lockstep spinning in the same direction.
 # OPPOSITE is for polarizer and analyzer lockstep spinning in opposite directions.
 POLARIZATION_MODE = "SAME"
+
+# Option to save this run's average scan
+SAVE_SCAN = False

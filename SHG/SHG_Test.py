@@ -12,7 +12,13 @@ class PulseData:
     Attributes: ai_channel - the input channel on the DAQ
                 trigger_source - the input channel of DAQ with SDG
                 sample_rate - how many samples are taken per second
-                samples_per_event - the total number of samples taken after triggering
+                samples_per_channel - the total number of samples taken after triggering,
+                SC_channel - the channel of the trigger sent by zaber, which signifies the start of a rotation,
+                Enc_A_channel - the channel of the encoder A input,
+                Enc_B_channel - the channel of the encoder B input,
+                averages - the number of times we rescan,
+                single_shot - the pulse values from a single scan,
+                average_shot - the average pulse values from all scans
     '''
     def __init__(self,
                PMT_channel = config.PMT_CHANNEL,
@@ -35,7 +41,8 @@ class PulseData:
         self.Enc_B_channel = Enc_B_channel
         self.averages = averages
         self.single_shot = []
-        self.average_shot = []
+        self.average_shots = []
+        self.callback = None
         
     def update(self):
         """
@@ -76,11 +83,10 @@ class PulseData:
                 rate=5000,
                 samps_per_chan = self.samples_per_channel * self.averages
             )
-            
+            #Tells the counter and pmt to start recording
             task_Counter.start()
             task_PMT.start()
             
-            self.average_shots = []
             #For every single shot data set
             for i in range(self.averages):
                 #Read the pulse channel
@@ -95,11 +101,8 @@ class PulseData:
                 angle_wrapped = list([d % 360 for d in angle_unwrapped])
                 #This sorts the peak values by angle
                 #This is the result that we could display as the single shot data
-                print(len(angle_wrapped))
                 idx = np.argsort(angle_wrapped)
-                print("check 1")
                 self.single_shot= PMT_peaks_offset[idx]
-                print("check 2")
                 #If we haven't added a single shot yet
                 if i==0:
                     #Set the average shots to the first single shot
@@ -107,6 +110,13 @@ class PulseData:
                 else:
                     #Otherwise, just average them element wise.
                     self.average_shots = (self.single_shot + i*(self.average_shots ))/(i+1)
+                
+                if self.callback:
+                    self.callback(
+                        self.single_shot,
+                        self.average_shots,
+                        i + 1
+                    )
                   
 
                 

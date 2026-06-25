@@ -43,7 +43,7 @@ class Zaber:
         self.connection = Connection.open_serial_port(self.zaber_resource_name)
 
         self.device = self.connection.detect_devices()[0]
-        #self.device.generic_command("lockstep 1 setup disable")
+        # self.device.generic_command("lockstep 1 setup disable")
 
         self.P_axis = self.device.get_axis(1)
         self.A_axis = self.device.get_axis(2)
@@ -67,11 +67,11 @@ class Zaber:
             self.lockstep.enable(1, 2)
             self.lockstep.move_velocity(speed)
 
-        # elif self.mode == "OPPOSITE":
-        #     self.A_axis.settings.set("system.axis.reverse", 0)
-        #     self.lockstep = device.get_lockstep(1)
-        #     self.lockstep.enable(1, 2)
-        #     self.lockstep.move_velocity(speed)
+        elif self.mode == "OPPOSITE":
+            self.A_axis.move_relative(0)
+            self.lockstep = self.device.get_lockstep(1)
+            self.lockstep.enable(1, 2)
+            self.lockstep.move_velocity(speed)
 
         else:
             print("Invalid polarization mode")
@@ -88,7 +88,7 @@ class Zaber:
             try:
                 self.lockstep.disable()
             except:
-                print("not in lockstep")
+                pass
             self.connection.close()
 
 
