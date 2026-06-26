@@ -27,6 +27,16 @@ class Viewer(QWidget):
         self.polar_plot.setAspectLocked(True)
         self.polar_curve = self.polar_plot.plot(pen='y')
 
+        # Set x-axis limits
+        self.single_plot.setXRange(0, 360)
+        self.avg_plot.setXRange(0, 360)
+
+        # Tick labels every 15°
+        ticks = [(i, str(i)) for i in range(0, 361, 15)]
+
+        self.single_plot.getAxis("bottom").setTicks([ticks])
+        self.avg_plot.getAxis("bottom").setTicks([ticks])
+
         # add to layout
         main_layout.addWidget(self.single_plot)
         main_layout.addWidget(self.avg_plot)
@@ -36,13 +46,17 @@ class Viewer(QWidget):
     # SINGLE SHOT UPDATE
     # -------------------------
     def update_single(self, data):
-        self.single_curve.setData(data)
+        angles = np.linspace(0, 360, len(data))
+
+        self.single_curve.setData(angles, data)
 
     # -------------------------
     # AVERAGE UPDATE
     # -------------------------
     def update_average(self, data):
-        self.avg_curve.setData(data)
+        angles = np.linspace(0, 360, len(data))
+    
+        self.avg_curve.setData(angles, data)
         self.update_polar(data)
 
     # -------------------------
@@ -61,3 +75,4 @@ class Viewer(QWidget):
         y = r * np.sin(angles)
 
         self.polar_curve.setData(x, y)
+    

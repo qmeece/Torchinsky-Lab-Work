@@ -1,6 +1,6 @@
 import config
 import Viewer
-import SHG_Test
+import daq
 import zaber
 import saver
 import time
@@ -14,11 +14,11 @@ class Bridge(QObject):
     new_average = pyqtSignal(object)
     finished = pyqtSignal()
 
-def main():
+def run(File="file_info", Polarization=config.POLARIZATION_MODE, Averages=config.AVERAGES):
     app = QApplication(sys.argv)
 
-    zaber_instance = zaber.Zaber()
-    zaber_instance.start_Zaber(39000)
+    zaber_instance = zaber.Zaber(POLARIZATION_MODE=Polarization)
+    zaber_instance.main(39000)
 
     bridge = Bridge()
 
@@ -34,9 +34,9 @@ def main():
 
     bridge.finished.connect(on_finished)
 
-    pulse = SHG_Test.PulseData()
+    pulse = daq.PulseData(averages=Averages)
 
-    saver_instance = saver.ScanSaver()
+    saver_instance = saver.ScanSaver(File=File)
 
     pulse.callback = lambda single, avg, n: (
         bridge.new_single.emit(single),
@@ -56,8 +56,5 @@ def main():
 
     app.exec()
 
-    # cleanup AFTER GUI loop ends
-    zaber_instance.close()
-
 if __name__ == "__main__":
-    main()
+    run()

@@ -5,8 +5,9 @@ from datetime import datetime
 
 
 class ScanSaver:
-    def __init__(self, folder="scans"):
+    def __init__(self, folder="scans", File="file_info"):
         self.folder = folder
+        self.File = File
         os.makedirs(self.folder, exist_ok=True)
 
     def save(self, pulse):

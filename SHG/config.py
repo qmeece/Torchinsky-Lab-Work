@@ -24,7 +24,7 @@ SAMPLE_RATE = 1000000
 #The number of peaks taken per rotation
 SAMPLES_PER_CHANNEL = 1007
 #Number of times we rescan
-AVERAGES = 5
+AVERAGES = 100
 
 #COUNTER INPUTS
 #Pulses per revolution- this is set by the physical limits of the stepper motor
@@ -36,23 +36,25 @@ ENC_B_CHANNEL= "/Dev1/PFI14"
 
 #ZABER INPUTS
 ZABER_RESOURCE_NAME = "COM7"
-P_MOTOR = "1 2"
-A_MOTOR = "1 1"
+P_MOTOR = 2
+A_MOTOR = 1
 # H = 0
 # V = 1
 # SAME = 2
 # OPPOSITE = 3
 
-# Offset in degrees for both the analyzer and polarizer to get to vertical polarization
-ANALYZER_OFFSET = 0
-POLARIZER_OFFSET = 0
+# Offset in ???? for both the analyzer and polarizer to get to vertical polarization
+# 6/25/26 Quinn and Josh determine Polarizer offset 640 usteps
+# 6/25/26 Quinn and Josh determine Analyzer offset 250 usteps
+ANALYZER_OFFSET = 250
+POLARIZER_OFFSET = 640
 
 # Sets the polarization mode that the Zaber runs in.
 # H is for the analyzer horizontally polarized and the polarizer spinning.
 # V is for the analyzer vertically polarized and the polarizer spinning.
 # SAME is for polarizer and analyzer lockstep spinning in the same direction.
 # OPPOSITE is for polarizer and analyzer lockstep spinning in opposite directions.
-POLARIZATION_MODE = "SAME"
+POLARIZATION_MODE = "V"
 
 # Option to save this run's average scan
 SAVE_SCAN = False
