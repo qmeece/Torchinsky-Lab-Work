@@ -1,27 +1,26 @@
 import pyqtgraph as pg
 import numpy as np
-from PyQt6.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout
+from PyQt6.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QPushButton
 
 class Viewer(QWidget):
     def __init__(self):
         super().__init__()
-
-        main_layout = QVBoxLayout(self)
+        plot_layout= QVBoxLayout(self)
 
         # -------------------------
-        # LEFT: SINGLE SHOT PLOT
+        # SINGLE SHOT PLOT
         # -------------------------
         self.single_plot = pg.PlotWidget(title="Single Shot")
         self.single_curve = self.single_plot.plot(pen='r')
 
         # -------------------------
-        # MIDDLE: AVERAGE PLOT
+        # AVERAGE PLOT
         # -------------------------
         self.avg_plot = pg.PlotWidget(title="Running Average")
         self.avg_curve = self.avg_plot.plot(pen='w')
 
         # -------------------------
-        # RIGHT: POLAR PLOT
+        # POLAR PLOT
         # -------------------------
         self.polar_plot = pg.PlotWidget(title="Average (Polar)")
         self.polar_plot.setAspectLocked(True)
@@ -38,10 +37,10 @@ class Viewer(QWidget):
         self.avg_plot.getAxis("bottom").setTicks([ticks])
 
         # add to layout
-        main_layout.addWidget(self.single_plot)
-        main_layout.addWidget(self.avg_plot)
-        main_layout.addWidget(self.polar_plot)
-
+        plot_layout.addWidget(self.single_plot)
+        plot_layout.addWidget(self.avg_plot)
+        plot_layout.addWidget(self.polar_plot)
+  
     # -------------------------
     # SINGLE SHOT UPDATE
     # -------------------------

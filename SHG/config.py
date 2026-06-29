@@ -54,7 +54,7 @@ POLARIZER_OFFSET = 640
 # V is for the analyzer vertically polarized and the polarizer spinning.
 # SAME is for polarizer and analyzer lockstep spinning in the same direction.
 # OPPOSITE is for polarizer and analyzer lockstep spinning in opposite directions.
-POLARIZATION_MODE = "V"
+POLARIZATION_MODE = "OPPOSITE"
 
 # Option to save this run's average scan
 SAVE_SCAN = False

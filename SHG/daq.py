@@ -92,7 +92,8 @@ class PulseData:
                 #Read the pulse channel
                 PMT_peaks_raw =np.array(task_PMT.read(number_of_samples_per_channel=self.samples_per_channel))
                 #SPECIAL- WE HAVE NO IDEA WHY THIS OFFSET IS SUBTRACTED FROM THE PMT SIGNAL, ASK ABOUT THIS
-                PMT_peaks_offset= np.array([a - 0.00111 for a in PMT_peaks_raw])
+                sp_off = 0.0005 # .00111
+                PMT_peaks_offset= np.array([a - sp_off for a in PMT_peaks_raw])
                 #Read the corresponding degree from the counter
                 # Note that this creates an array with absolute degrees, including values greater than 360
                 angle_unwrapped = np.array(task_Counter.read(number_of_samples_per_channel=self.samples_per_channel))
