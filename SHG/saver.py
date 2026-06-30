@@ -21,13 +21,14 @@ class ScanSaver:
 
     def save(self, pulse):
 
+        # Get date information when scan is done and attempting to save
         now = datetime.now()
 
         timestamp = now.strftime("%Y%m%d_%H%M%S")
         year = now.strftime("%Y")
         full_date = now.strftime("%Y-%m-%d")
-        print(self.File)
 
+        # Takes metadata from calling the class and sorts it
         metadata = self.File.copy()
         metadata["timestamp"] = timestamp
 
@@ -35,6 +36,7 @@ class ScanSaver:
         sample = metadata.get("sample", "UnknownSample")
         face = metadata.get("face", "UnknownFace")
 
+        # Creates folder structure inside the Experiment_Data folder. It's reusable for any experiment type
         save_folder = os.path.join(
             self.base_folder,
             experiment,
@@ -45,6 +47,7 @@ class ScanSaver:
 
         os.makedirs(save_folder, exist_ok=True)
 
+        # Now we format the actual file names to be the experiment plus a scan number which is given in ascending order based on time
         existing_scans = glob.glob(
             os.path.join(save_folder, f"{experiment}_scan*.npz")
         )
@@ -56,8 +59,10 @@ class ScanSaver:
             f"{experiment}_scan{scan_number:04d}.npz"
         )
 
+        # Add the scan number to the metadata
         metadata["scan_number"] = scan_number
 
+        # Save the average scan with metadata in a .npz file to the location specified
         np.savez(
             filename,
             average=pulse.average_shots,
