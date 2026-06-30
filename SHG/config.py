@@ -57,4 +57,17 @@ POLARIZER_OFFSET = 640
 POLARIZATION_MODE = "OPPOSITE"
 
 # Option to save this run's average scan
-SAVE_SCAN = False
+SAVE_SCAN = True
+
+
+FILE_INFO = {
+    "experiment": "SHG",
+    "sample": "GaAs",
+    "face": "111",
+    "averages": AVERAGES,
+    "first_wavelength": 1300,
+    "second_wavelength": 650,
+    "temp": 298,
+    "polarization": POLARIZATION_MODE,
+    "notes": "These are test runs for the file saving program with the laser blocked"
+    }

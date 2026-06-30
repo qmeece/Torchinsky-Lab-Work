@@ -2,39 +2,65 @@ import numpy as np
 import json
 import os
 from datetime import datetime
-
+import glob
+import config
 
 class ScanSaver:
-    def __init__(self, folder="scans", File="file_info"):
-        self.folder = folder
+    def __init__(self, File=config.FILE_INFO):
         self.File = File
-        os.makedirs(self.folder, exist_ok=True)
+
+        # Directory containing ScanSaver.py
+        this_dir = os.path.dirname(os.path.abspath(__file__))
+
+        # Parent directory
+        parent_dir = os.path.dirname(this_dir)
+
+        # Create/use experiment_data folder
+        self.base_folder = os.path.join(parent_dir, "Experiment_Data")
+        os.makedirs(self.base_folder, exist_ok=True)
 
     def save(self, pulse):
-        """
-        Save final results from a PulseData object.
-        """
 
-        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+        now = datetime.now()
 
-        filename = os.path.join(
-            self.folder,
-            f"scan_{timestamp}.npz"
+        timestamp = now.strftime("%Y%m%d_%H%M%S")
+        year = now.strftime("%Y")
+        full_date = now.strftime("%Y-%m-%d")
+        print(self.File)
+
+        metadata = self.File.copy()
+        metadata["timestamp"] = timestamp
+
+        experiment = metadata.get("experiment", "UnknownExperiment")
+        sample = metadata.get("sample", "UnknownSample")
+        face = metadata.get("face", "UnknownFace")
+
+        save_folder = os.path.join(
+            self.base_folder,
+            experiment,
+            year,
+            sample + face,
+            full_date,
         )
 
-        metadata = {
-            "timestamp": timestamp,
-            "samples_per_channel": pulse.samples_per_channel,
-            "averages": pulse.averages,
-            "sample_rate": pulse.sample_rate,
-            "PMT_channel": pulse.PMT_channel,
-            "counter_channel": pulse.counter_channel,
-        }
+        os.makedirs(save_folder, exist_ok=True)
+
+        existing_scans = glob.glob(
+            os.path.join(save_folder, f"{experiment}_scan*.npz")
+        )
+
+        scan_number = len(existing_scans) + 1
+
+        filename = os.path.join(
+            save_folder,
+            f"{experiment}_scan{scan_number:04d}.npz"
+        )
+
+        metadata["scan_number"] = scan_number
 
         np.savez(
             filename,
             average=pulse.average_shots,
-            single=pulse.single_shot,
             metadata=json.dumps(metadata)
         )
 

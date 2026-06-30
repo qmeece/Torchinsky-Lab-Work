@@ -14,7 +14,7 @@ class Bridge(QObject):
     new_average = pyqtSignal(object)
     finished = pyqtSignal()
 
-def run(File="file_info", Polarization=config.POLARIZATION_MODE, Averages=config.AVERAGES):
+def run(File=config.FILE_INFO, Polarization=config.POLARIZATION_MODE, Averages=config.AVERAGES, Save_scan=config.SAVE_SCAN):
     app = QApplication(sys.argv)
 
     zaber_instance = zaber.Zaber(POLARIZATION_MODE=Polarization)
@@ -45,7 +45,7 @@ def run(File="file_info", Polarization=config.POLARIZATION_MODE, Averages=config
 
     def run_acquisition():
         pulse.update()
-        if config.SAVE_SCAN:
+        if Save_scan:
             saver_instance.save(pulse)
         bridge.finished.emit()
 
