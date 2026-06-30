@@ -11,8 +11,10 @@ import numpy as np
 from PyQt6.QtWidgets import QWidget, QVBoxLayout, QGridLayout, QHBoxLayout, QPushButton,QLabel,QLineEdit,QCheckBox,QComboBox
 from PyQt6.QtWidgets import QApplication
 import sys
-# from experiment import Bridge
-# import experiment
+from Viewer import Viewer
+from ExperimentNew import Experiment
+
+
 class Gui(QWidget):
     def __init__(self):
         super().__init__()
@@ -20,6 +22,8 @@ class Gui(QWidget):
         main_layout = QHBoxLayout(self)
         self.setLayout(main_layout)
         
+        #Add the viewer panel
+        self.viewer = Viewer.Viewer()
         
         #Add the control panel
         control = ControlPanel()
@@ -27,13 +31,27 @@ class Gui(QWidget):
         
         #Geometry
         self.resize(1000, 600)
-    # def startExperiment(self):
-    #     self.bridge = Bridge()
-    #     experiment.run(
-    #         bridge=self.bridge,
-    #         app=QApplication.instance()
-    #     )
-        
+
+        self.start_button.clicked.connect(
+            self.start_experiment)
+
+    def start_experiment(self):
+
+        self.experiment = Experiment()
+
+        self.experiment.new_single.connect(
+            self.viewer.update_single
+        )
+
+        self.experiment.new_average.connect(
+            self.viewer.update_average
+        )
+
+        self.experiment.finished.connect(
+            lambda: print("Finished")
+        )
+
+        self.experiment.start()
 
 class ControlPanel(QWidget):
     def __init__(self):
@@ -94,27 +112,6 @@ class ControlPanel(QWidget):
         
 
        
-
-class PlotPanel(QWidget):
-    def __init__(self):
-        super().__init__()
-        self.setWhatsThis("This is the plot panel for the SHG application.")
-        plot_layout = QVBoxLayout(self)
-      
-        self.single_shot_plot = pg.PlotWidget()
-        self.plot_widget.setTitle("Single Shot")
-        self.plot_widget.setLabel("left", "Amplitude")
-        self.plot_widget.setLabel("bottom", "Angle")       
-        
-        self.average_plot = pg.PlotWidget()
-        self.plot_widget.setTitle("Average")
-        self.plot_widget.setLabel("Left", "Amplitude")
-        self.plot_widget.setLabel("bottom", "Angle")   
-            
-        self.polar_plot = pg.PlotWidget()
-        self.plot_widget.setTitle("Average")
-        self.plot_widget.setLabel("Left", "Amplitude")
-        self.plot_widget.setLabel("bottom", "Angle")  
          
 
 def main():
