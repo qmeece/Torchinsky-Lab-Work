@@ -57,7 +57,7 @@ POLARIZER_OFFSET = 640
 POLARIZATION_MODE = "OPPOSITE"
 
 # Option to save this run's average scan
-SAVE_SCAN = True
+SAVE_SCAN = False
 
 
 FILE_INFO = {
@@ -69,5 +69,5 @@ FILE_INFO = {
     "second_wavelength": 650,
     "temp": 298,
     "polarization": POLARIZATION_MODE,
-    "notes": "These are test runs for the file saving program with the laser blocked"
-    }
+    "notes": "Testing fitting"
+}

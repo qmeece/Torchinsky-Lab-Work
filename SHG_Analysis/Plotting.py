@@ -9,6 +9,8 @@ def P_H_0(phi, xyz, beta):
 def P_V_0(phi, xyz, beta):
     return (xyz/np.sqrt(3)) * (np.cos(3* beta + 2 * phi) - np.sin(3 * beta + 2 * phi))
 
+
+
 def P_H_45(phi, theta, xyz, beta):
     first_term = (-(np.cos(phi) ** 2))*(np.cos(3 * beta) + np.sin(3 * beta))
     second_term = 2 * np.cos(theta) * np.cos(phi) * np.sin(phi) * (-np.cos(3 * beta) + np.sin(3 * beta))
@@ -21,7 +23,7 @@ def P_V_45(phi, theta, xyz, beta):
     return xyz/np.sqrt(3) * (first_term + second_term)
 
 def P_SAME_45(phi, theta, xyz, beta):
-    
+
     return
 
 def P_OPPOSITE_45(phi, theta, xyz, beta):
