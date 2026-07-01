@@ -24,48 +24,47 @@ class Gui(QWidget):
         
         
         self.setWhatsThis("This is the main window for the SHG application.")
+
         #The main layout for the Window. It is in HBox layout,
         # meaning widgets added sequentially will propagate left-right
-        main_layout = QHBoxLayout(self)
-        self.setLayout(main_layout)
+        self.main_layout = QHBoxLayout(self)
+        self.setLayout(self.main_layout)
         
-    
-        #This creates an instance of the viewer class,
-        # which is the widget that displays the plots
-        self.viewer = Viewer()
         
         #Add the control panel
         #This is the widget that contains all of the controls and parameter inputs for the experiment
-        control = ControlPanel()
-        main_layout.addWidget(control)
+        self.control = ControlPanel()
+        self.main_layout.addWidget(self.control)
+
+        #Adds the viewer panel
+        self.viewer = Viewer()
+        self.viewer.show()
+        self.main_layout.addWidget(self.viewer)
+
+        
         
         #This sets the initial size of the experiment
         self.resize(1000, 600)
 
+
         #This connects the start button on the control panel to be connected to the experiment file
         #When start is clicked, experiment.py will run.
-      #  self.start_button.clicked.connect(
-          #  self.start_experiment)
+        self.control.run_button.clicked.connect(
+            self.start_experiment)
 
     def start_experiment(self):
-        #This creates an instance of the experiment class from the Experiment.py file
-        self.experiment = Experiment()
 
-        #This creates a streaming channel for the single shot data
-        self.experiment.new_single.connect(
-            self.viewer.update_single
-        )
+        #Initializes an experiment object with parameters from the control panel
+        experiment = Experiment(File=self.control.file_info,
+                         Polarization=self.control.file_info["polarization"],
+                         Averages=self.control.file_info["averages"],
+                         Save_scan= self.control.save_data.isChecked())
+        #Connecs the signals from the experiment to the viewer
+        experiment.new_single.connect(self.viewer.update_single)
+        experiment.new_average.connect(self.viewer.update_average)
+        #Starts the experiment
+        experiment.start()
 
-        #This creates a streaming channel for the average shot data
-        self.experiment.new_average.connect(
-            self.viewer.update_average
-        )
-        #This allows the GUI to know when the experiment is done running
-        self.experiment.finished.connect(
-            lambda: print("Finished")
-        )
-        #This runs the experiment
-        self.experiment.start()
 
 class ControlPanel(QWidget):
     '''This is the control panel Widget. It has a QGridLayout, which means widget
@@ -81,9 +80,6 @@ class ControlPanel(QWidget):
         #Run button - should initialize experiment
         self.run_button = QPushButton("Run")
         control_layout.addWidget(self.run_button,0,0)
-        #Stop button- Should stop the experiment, home the zabers?
-        self.stop_button = QPushButton("Stop")
-        control_layout.addWidget(self.stop_button,0,1)
         
         #Setting the sample name
         self.sample_input = QLineEdit()
@@ -162,8 +158,8 @@ class ControlPanel(QWidget):
         self.polarization_button = QComboBox()
         self.polarization_button.addItem("H")
         self.polarization_button.addItem("V")
-        self.polarization_button.addItem("Parallel")
-        self.polarization_button.addItem("Perpendicular")
+        self.polarization_button.addItem("SAME")
+        self.polarization_button.addItem("OPPOSITE")
         self.polarization_button.textActivated.connect(self.change_polarization)
         self.polarization_label= QLabel("Selected: H")
         control_layout.addWidget(self.polarization_button,7,0)
@@ -174,10 +170,6 @@ class ControlPanel(QWidget):
         #Option to save data
         self.save_data = QCheckBox("Save Data")
         control_layout.addWidget(self.save_data,8,0)
-        self.save_data.toggled.connect(self.initialize_save)
-        
-    def initialize_save(self):
-        pass
         
     def change_polarization(self,text):
         self.polarization_label.setText(f"Selected: {text}")
